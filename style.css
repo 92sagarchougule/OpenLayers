@@ -1,0 +1,27 @@
+*{
+    box-sizing:border-box
+}
+
+body{
+    margin:0;
+    padding:0;
+}
+
+.js-map{
+    height:100vh;
+    width:100vw;
+}
+
+.pop-coordinat{
+    content: "";
+    position: absolute;
+    background-color: white;
+    padding-top:4px;
+    padding-bottom: 4px;
+    padding-left:4px;
+    padding-right:4px;
+    margin-left: 2px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: red;
+}
