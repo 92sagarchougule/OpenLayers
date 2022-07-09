@@ -34,4 +34,10 @@ map.on('click',function(e){
     popupContanerCordinate.innerHTML = clickedCoordinate
 })
 
+
+const dragRotate = new ol.interaction.DragRotate({
+    condition:ol.events.condition.altKeyOnly
+})
+map.addInteraction(dragRotate);
+
 }
