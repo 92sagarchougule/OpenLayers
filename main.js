@@ -40,4 +40,12 @@ const dragRotate = new ol.interaction.DragRotate({
 })
 map.addInteraction(dragRotate);
 
+const intractionDraw = new ol.interaction.Draw({
+    type:'Polygon'
+})
+
+map.addInteraction(intractionDraw);
+
+
+
 }
