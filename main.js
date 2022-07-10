@@ -1,51 +1,37 @@
 window.onload = init
 
 function init(){
-    const map = new ol.Map({
-        view: new ol.View({
-            center:[8741950.150446419, 2547900.8433118276],
-            zoom : 2
-            //minZoom:5,
-            //maxZoom:8, //rotation:0.5
-        }),
-        layers: [
-            new ol.layer.Tile({
-                source: new ol.source.OSM()
-            })
-        ],
-        target:'map',   // target to div element id;
-        keyboardEventTarget:document
+    
+
+    var Osmlayer = new ol.layer.Tile({
+        source: new ol.source.OSM()
+    });
+
+    var view = new ol.View({
+        center:[8614756.729822244, 2611358.2528159544],
+        zoom:3
+    });
+
+    var map = new ol.Map({
+        target:'map'
+    });
+
+    map.addLayer(Osmlayer);
+    map.setView(view);
+
+    var popupContainerElement = document.getElementById('popup-coordinate');
+
+    const popupCoordinate = new ol.Overlay({
+        element:popupContainerElement
+    });
+
+    map.addOverlay(popupCoordinate);
+
+    map.on('click',function(b){
+        const clickedCoordinate = b.coordinate;
+
+        popupCoordinate.setPosition(undefined);
+        popupCoordinate.setPosition(clickedCoordinate);
+        popupContainerElement.innerHTML = clickedCoordinate;
     })
-
-
-const popupContanerCordinate = document.getElementById('popup-coordinator');
-
-const popup = new ol.Overlay({
-    element: popupContanerCordinate,
-    positioning:'center-left'
-})
-map.addOverlay(popup);
-
-map.on('click',function(e){
-    //console.log(e.coordinate)
-    const clickedCoordinate = e.coordinate;
-    popup.setPosition(undefined);
-    popup.setPosition(clickedCoordinate);
-    popupContanerCordinate.innerHTML = clickedCoordinate
-})
-
-
-const dragRotate = new ol.interaction.DragRotate({
-    condition:ol.events.condition.altKeyOnly
-})
-map.addInteraction(dragRotate);
-
-const intractionDraw = new ol.interaction.Draw({
-    type:'Polygon'
-})
-
-map.addInteraction(intractionDraw);
-
-
-
-}
+} 
