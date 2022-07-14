@@ -16,3 +16,11 @@ body{
     position:'relative';
     background-color: green;
 }
+
+.overlay-container{
+    background-color: red;
+    border-top: 2px;
+    border-left: 2px;
+    border-right: 2px;
+    border-bottom: 2px;
+}

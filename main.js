@@ -1,78 +1,58 @@
 window.onload = init
 
 function init(){
-    
-    // default controls
-    const fullScreen = new ol.control.FullScreen();
-    const scaleLine = new ol.control.ScaleLine({
-        unit:'degrees',
-        minWidth:5,
-        steps:4
-    });
-    const zoomSlider = new ol.control.ZoomSlider();
-    const mousePosition = new ol.control.MousePosition({
-        projection: 'EPSG:4326',
-        coordinateFormat: function(coordinate) {
-        return ol.coordinate.format(coordinate, '{y}, {x}', 4);
-    }
-    });
-    const overviewMap = new ol.control.OverviewMap();
 
-    var Osmlayer = new ol.layer.Tile({
-        source: new ol.source.OSM()
-    });
+    // Controls
 
     var view = new ol.View({
-        center:[8614756.729822244, 2611358.2528159544],
-        zoom:3
+        center:[8415930.665801784, 1731707.0831358973],
+        zoom:17.5
     });
 
-    var map = new ol.Map({
-        target:'map',
-        controls: ol.control.defaults().extend([
-            fullScreen, scaleLine, zoomSlider, mousePosition, overviewMap
-        ])
-    });
-
-    map.addLayer(Osmlayer);
-    map.setView(view);
-
-
-
-    //console.log(ol.control.defaults());
-    /*
-    var popupContainerElement = document.getElementById('popup-coordinate');
-
-    const popupCoordinate = new ol.Overlay({
-        element:popupContainerElement
-    });
-
-    map.addOverlay(popupCoordinate);
-
-    map.on('click',function(b){
-        const clickedCoordinate = b.coordinate;
-
-        popupCoordinate.setPosition(undefined);
-        popupCoordinate.setPosition(clickedCoordinate);
-        popupContainerElement.innerHTML = clickedCoordinate;
-        //popupContainerElement.innerHTML = Message1;
+    var layer = new ol.layer.Tile({
+            source: new ol.source.OSM(),
+            visible:true,
+            title:'OpenStreetMap'
     });
     
-    let DrawPoly = new ol.interaction.Draw({
-        type:'Polygon',
-        freehand:'Yes'
+    var map = new ol.Map({
+        target:'map'
+    });
+
+    map.addLayer(layer);
+    map.setView(view);
+
+    var IndiaFile = new ol.layer.Vector({
+        source: new ol.source.Vector({
+            url:'./lib/spatial_data/lup_nursery.geojson',
+            format: new ol.format.GeoJSON()
+        })
     })
 
-    map.addInteraction(DrawPoly);
+    map.addLayer(IndiaFile);
 
-    /*
-    DrawPoly.on('drawend', function(e){
-        //console.log('End polyon drawing')
-        let pareser = new ol.format.GeoJSON();
-        let drawFeatures = pareser.writeFeatures([e.feature]);
-        console.log(drawFeatures);
+    const overlayContainerElement = document.querySelector('overlay-container');
 
+    const overlayAtt = new ol.Overlay({
+        element: overlayContainerElement
     })
-    */
 
-} 
+    map.addOverlay(overlayAtt);
+
+    const overlayFeatureName = document.getElementById('feature-name');
+    const overlayFeatureArea = document.getElementById('feature-area');
+
+
+    map.on('click', function(event){
+        //console.log(event.coordinate)
+        overlayAtt.setPosition(undefined);        
+        map.forEachFeatureAtPixel(event.pixel, function(feature, layer){
+            let Clickecoordinates = event.coordinate;
+            const lup = feature.get('lup');
+            const fcarea = feature.get('area_msqr');
+            overlayAtt.setPosition(Clickecoordinates);
+            overlayFeatureName.innerHTML = lup;
+            overlayFeatureArea.innerHTML = fcarea;
+        });
+    })
+}
