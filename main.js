@@ -5,8 +5,8 @@ function init(){
     // Controls
 
     var view = new ol.View({
-        center:[8415930.665801784, 1731707.0831358973],
-        zoom:17.5
+        center:[8416686.663317095, 1731974.509331715],
+        zoom:15
     });
 
     var layer = new ol.layer.Tile({
@@ -22,37 +22,74 @@ function init(){
     map.addLayer(layer);
     map.setView(view);
 
-    var IndiaFile = new ol.layer.Vector({
+    var Model_Nersery = new ol.layer.Vector({
         source: new ol.source.Vector({
             url:'./lib/spatial_data/lup_nursery.geojson',
             format: new ol.format.GeoJSON()
         })
     })
+    //map.addLayer(IndiaFile);
 
-    map.addLayer(IndiaFile);
+    var Uni_Boundry = new ol.layer.Vector({
+        source: new ol.source.Vector({
+            url:'./lib/spatial_data/Boundry.geojson',
+            format: new ol.format.GeoJSON()
+        })
+    });
 
-    const overlayContainerElement = document.querySelector('overlay-container');
+    var Road = new ol.layer.Vector({
+        source: new ol.source.Vector({
+            url:'./lib/spatial_data/Road.geojson',
+            format: new ol.format.GeoJSON()
+        })
+    });
 
-    const overlayAtt = new ol.Overlay({
-        element: overlayContainerElement
+    var Stream = new ol.layer.Vector({
+        source: new ol.source.Vector({
+            url:'./lib/spatial_data/Stream.geojson',
+            format: new ol.format.GeoJSON()
+        })
     })
-
-    map.addOverlay(overlayAtt);
-
-    const overlayFeatureName = document.getElementById('feature-name');
-    const overlayFeatureArea = document.getElementById('feature-area');
-
-
-    map.on('click', function(event){
-        //console.log(event.coordinate)
-        overlayAtt.setPosition(undefined);        
-        map.forEachFeatureAtPixel(event.pixel, function(feature, layer){
-            let Clickecoordinates = event.coordinate;
-            const lup = feature.get('lup');
-            const fcarea = feature.get('area_msqr');
-            overlayAtt.setPosition(Clickecoordinates);
-            overlayFeatureName.innerHTML = lup;
-            overlayFeatureArea.innerHTML = fcarea;
+        //Layer Switcher
+        const allLayer = new ol.layer.Group({
+            layers:[Model_Nersery,Uni_Boundry,Stream, Road]
         });
+    
+        map.addLayer(allLayer);
+
+    const scaleLine = new ol.control.ScaleLine({
+    });
+    map.addControl(scaleLine);
+
+    const overlayContainerElement = document.querySelector('.overlay-container');
+
+    const overlayLayer = new ol.Overlay({
+        element: overlayContainerElement
+    });
+
+    map.addOverlay(overlayLayer);
+
+    const overlayName = document.getElementById('feature-name');
+    const overlayArea = document.getElementById('feature-area');
+    //const overlayGeom = document.getElementById('feature-geometry')
+
+    map.on('click', function(e){
+        const coordinate =  e.coordinate;
+        map.forEachFeatureAtPixel(e.pixel, function(feature, layer){
+            let featureName = feature.get('lup'); //.getKeys()
+            let featureArea = feature.get('area_msqr');
+            //let featureGeom = feature.get('photo');
+            overlayLayer.setPosition(coordinate);
+            overlayName.innerHTML = '1)Feature Name: ' + featureName;
+            overlayArea.innerHTML = '2)Feature Area: ' + featureArea + '(Sqr-Mtrs)';
+            //overlayGeom.innerHTML = 'Feature Geometry : ' + featureGeom;
+            //console.log(feature.getKeys());  //.getKeys()
+        })
+    });
+
+    map.on('click', function(e){
+        console.log(e.coordinate);
     })
+
+    
 }
