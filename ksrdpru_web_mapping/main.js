@@ -9,7 +9,8 @@ function init(){
         }),
         layers:[
             new ol.layer.Tile({  //layer class
-                source: new ol.source.OSM()
+                source: new ol.source.OSM(),
+                title:'BaseMap'
             })
         ],
         target:'map'
@@ -44,8 +45,10 @@ function init(){
     const Nursery = new ol.layer.Vector({
         source: new ol.source.Vector({
             url:'./lib/spatial_data/lup_nursery.geojson',
-            format: new ol.format.GeoJSON()
-        })
+            format: new ol.format.GeoJSON(),
+            
+        }),
+        title:'Model_Nursery'
     });
 
     map.addLayer(Nursery);
