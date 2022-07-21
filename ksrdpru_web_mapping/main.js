@@ -5,7 +5,7 @@ function init(){
     const map = new ol.Map({ // map class
         view: new ol.View({  // view class
             center:[8416598.169912841, 1731976.3818193525],
-            zoom:16
+            zoom:15
         }),
         layers:[
             new ol.layer.Tile({  //layer class
@@ -16,19 +16,35 @@ function init(){
         target:'map'
     });
 
-    /*
+    
     //Added Layer from Geoserver
     
     
     //Contour Layer from Geoserver
+
     const contour = new ol.layer.Tile({
         source:new ol.source.TileWMS({
             url:'http://localhost:8080/geoserver/wms',
             params:{'LAYERS':'ksrdpru:contour.'},
             serverType:'geoserver'
-        })
+        }),
+        title:'Contour'
     });
     map.addLayer(contour);
+
+
+    const Boundry = new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+            url: 'http://localhost:8080/geoserver/wms',
+            params: {'LAYERS': 'ksrdpru:lineboundry'},
+            serverType: 'geoserver'
+          }),
+          title:'Boundry'
+    });
+    map.addLayer(Boundry);
+
+
+
 
     //Building Layer from Geoserver
     const Building = new ol.layer.Tile({
@@ -36,10 +52,11 @@ function init(){
             url: 'http://localhost:8080/geoserver/wms',
             params: {'LAYERS': 'ksrdpru:buildings'},
             serverType: 'geoserver'
-          })
+          }),
+          title:'Building'
     });
     map.addLayer(Building);
-    */
+    
 
     // GeoJSON layer added from local folder
     const Nursery = new ol.layer.Vector({
@@ -48,10 +65,12 @@ function init(){
             format: new ol.format.GeoJSON(),
             
         }),
-        title:'Model_Nursery'
+        title:'Model Nursery'
     });
 
     map.addLayer(Nursery);
+
+
     
 
     // ScaleBar
