@@ -1,0 +1,75 @@
+
+    var marklayer = new ol.layer.Vector({
+        title:'Location',
+        source: new ol.source.Vector({
+            url:'./lib/spatial_data/Buildings.geojson',
+            format: new ol.format.GeoJSON()
+        }),
+        style: function(feature, resolution){
+            return getStyle(feature, resolution);
+        }
+    });
+    
+    getStyle = function(feature, resolution){
+        if(feature.get('Name') == 'Goshala'){
+            return new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor:[0.5, 10],
+                    anchorXUnits:'fraction',
+                    anchorYUnits:'pixels',
+                    src:'./lib/spatial_data/Photos/Location1.jpg',
+                })
+            })
+        }
+
+        else if(feature.get('Name') == 'Nursery Model'){
+            return new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor:[0.5, 10],
+                    anchorXUnits:'fraction',
+                    anchorYUnits:'pixels',
+                    src:'./lib/spatial_data/Photos/Location2.jpg',
+                })
+            })
+        }
+
+        else if(feature.get('Name') == 'Lake'){
+            return new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor:[0.5, 10],
+                    anchorXUnits:'fraction',
+                    anchorYUnits:'pixels',
+                    src:'./lib/spatial_data/Photos/Location4.jpg',
+                })
+            })
+        }
+
+        else if(feature.get('Name') == 'Bird Sanctury'){
+            return new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor:[0.5, 10],
+                    anchorXUnits:'fraction',
+                    anchorYUnits:'pixels',
+                    src:'./lib/spatial_data/Photos/Location6.jpg',
+                })
+            })
+        }
+
+
+        else {
+            return new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor:[0.5, 10],
+                    anchorXUnits:'fraction',
+                    anchorYUnits:'pixels',
+                    src:'./lib/spatial_data/Photos/Location7.jpg',
+                })
+            })
+        }
+    }
+
+    
+    
+
+    map.addLayer(marklayer);
+    
