@@ -1,0 +1,143 @@
+*{
+    box-sizing: border-box;
+}
+
+body{
+    margin:0;
+    padding:0;
+}
+
+.map{
+    /*position: absolute;*/
+    height:100vh;
+    width:100vw;
+}
+
+#measuretype {
+    position: absolute;
+    z-index: 600;
+    top: 1%;
+    left: 60%;
+    width: 15%;
+}
+
+#popup-coordinate{
+    position:'relative';
+    background-color: rgba(239, 244, 239, 0);
+}
+.takeit{
+    border-width: 1.5px;
+    border-color: blue;
+    border-style: solid;
+    margin: 1px;
+    margin-top: 5px;
+    
+}
+
+.overlay-container{
+    background-color: rgba(144, 238, 144, 0.708);
+    border-color: rgb(4, 77, 16);
+    padding-top: 5px;
+    text-align: center;
+    align-items: center;
+    border-width: 1px;
+    border-style: solid;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    border-radius: 5px;
+    padding-bottom: 0px;
+    margin: 0px;  
+}
+
+#feature-name{
+    margin-bottom: 1px;
+    border-color: rgb(200, 11, 210);
+    border-style: solid;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background-color:rgb(215, 230, 214);
+    border-radius: 5px;
+    padding: 2px;
+}
+
+.ol-popup-closer {
+    text-decoration: none;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background-color:red;
+    border-color: rgb(240, 12, 12);
+    border-style: groove;
+    border-width: 1px;
+    padding: 1px;
+    margin: 1px;
+    font-size: 12px;
+    border-radius: 5px;
+}
+
+.ol-popup-closer:after {
+    content: "x";
+    color:black;
+}
+
+.MousePosi{
+    position:fixed;
+    bottom: 1px;
+    border-style: groove;
+    border-width: 1px;
+    border-color: brown;
+    left: 50%;
+    background-color: skyblue;
+    font-size: 12px;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+
+.desc_yes{
+    text-align: justify;
+    font-size: 12px;
+    background-color: rgba(6, 92, 103, 0.406);
+    padding: 1px;
+    margin: 1px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    border-radius: 5px;
+}
+
+.gfloor{
+    background-color: rgb(154, 187, 187);
+    margin: 2px;
+    padding: 2px;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: blue;
+}
+
+.ffloor{
+    background-color: rgb(154, 187, 187);
+    margin: 2px;
+    padding: 2px;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: blue;
+}
+
+.sfloor{
+    background-color: rgb(154, 187, 187);
+    margin: 2px;
+    padding: 2px;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: blue;
+}
+
+.depthead{
+    font-size: 15px;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    border-radius: 5px;
+    
+}
+
+.floor{
+    color: rgb(11, 167, 44);
+    font-weight:300;
+}
