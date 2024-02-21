@@ -1,0 +1,27 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./lib/v6.15.1-dist/ol.css">
+    <script src="./lib/v6.15.1-dist/ol.js"></script>
+</head>
+<body>
+    <div id="map"></div>
+
+    <input type="text" id="pinCodeSearch" placeholder="Search by PIN Code">
+    <button id="button" onclick="searchByPIN()" >Search</button>
+    
+
+    <div id="popup" class="ol-popup">
+        <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+        <div id="popup-content"></div>
+      </div>
+      
+      <!-- <div id="legend"></div> -->
+
+    <script src="main.js"></script>
+    <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
+</body>
+</html>

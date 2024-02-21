@@ -1,0 +1,68 @@
+#map {
+    width: 100%;
+    height: 100%;
+  }
+
+  #pinCodeSearch{
+
+    position: absolute;
+    right: 15%;
+    top: 12%;
+
+  }
+
+  #button{
+
+    position: absolute;
+    right: 10%;
+    top: 12%;
+
+  }
+
+  .ol-popup {
+    position: absolute;
+    background-color: white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    white-space: nowrap;
+    max-height: 200px; /* Set the maximum height */
+    overflow-y: auto; /* Add scrollbar if content exceeds the height */
+  }
+
+  .ol-popup-closer {
+    text-decoration: none;
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 16px;
+    color: #666;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .ol-popup-closer:hover {
+    color: #000;
+  }
+
+/* Add this to your CSS file or within a <style> tag in your HTML */
+.table {
+  width: 100%;
+  max-width: 400px; /* Adjust the maximum width as needed */
+  margin: 10px 0;
+  border-collapse: collapse;
+}
+
+.table, .table th, .table td {
+  border: 1px solid #ddd;
+}
+
+.table th, .table td {
+  padding: 8px;
+  text-align: left;
+}
+
+.table th {
+  background-color: #f2f2f2;
+}
