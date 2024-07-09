@@ -1,0 +1,101 @@
+ /* Ensure the map fills the screen */
+ #map {
+    width: 100vw;
+    height: 100vh;
+}
+
+/* #saveButton{
+    position:absolute;
+    top: 100px;
+    left: 40px;
+    z-index: 100;
+} */
+.ol-popup {
+position: absolute;
+background-color: white;
+box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+padding: 15px;
+border-radius: 10px;
+border: 1px solid #cccccc;
+bottom: 12px;
+left: -50px;
+min-width: 280px;
+}
+.ol-popup:after, .ol-popup:before {
+top: 100%;
+border: solid transparent;
+content: " ";
+height: 0;
+width: 0;
+position: absolute;
+pointer-events: none;
+}
+.ol-popup:after {
+border-top-color: white;
+border-width: 10px;
+left: 48px;
+margin-left: -10px;
+}
+.ol-popup:before {
+border-top-color: #cccccc;
+border-width: 11px;
+left: 48px;
+margin-left: -11px;
+}
+.ol-popup-closer {
+text-decoration: none;
+position: absolute;
+top: 2px;
+right: 8px;
+background-color: #fafafa;
+}
+
+#saveButton {
+    text-decoration: none;
+    position: absolute;
+    bottom: 2px;
+    right: 8px;
+}
+
+/* #name{
+
+    text-decoration: none;
+    position: absolute;
+    bottom : 1px;
+    left: 2px;
+} */
+
+
+.ol-popup-closer:after {
+content: "✖";
+}
+
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    
+  }
+  
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+
+  #edit-button{
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    z-index: 100;
+    padding: 10px;
+    background-color: rgb(211, 186, 235);
+  }
+
+  
