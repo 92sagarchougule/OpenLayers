@@ -36,7 +36,7 @@ def save_feature():
         conn.close()
 
         # Send response back to client (success message)
-        return jsonify({name: " saved successfully."}), 200
+        return jsonify({name: " saved successfully in Database."}), 200
 
     except psycopg2.Error as e:
         # Handle database errors
@@ -66,7 +66,7 @@ def delete_feature():
         conn.close()
 
         # Send response back to client (success message)
-        return jsonify({"message": "Feature deleted successfully."}), 200
+        return jsonify({"message": "Feature deleted successfully from Database."}), 200
 
     except psycopg2.Error as e:
         # Handle database errors

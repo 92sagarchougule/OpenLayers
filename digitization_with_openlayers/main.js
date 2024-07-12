@@ -283,45 +283,52 @@ map.addLayer(vectorLayer);
 
 let selectedFeature = null;
 
+var delele = document.getElementById('delete-fc');
+    delele.disabled = true;
 
-
-map.on('click',function(evt){
-  // console.log(evt.coordinate);
-        map.forEachFeatureAtPixel(evt.pixel, function(feature){
-          // console.log(feature.get('name'));
-
-          var current_fc = feature;
-          
-          
-          if (selectedFeature) {
-            selectedFeature.setStyle(undefined);
-            // console.log('crossed this function');
-            // console.log(selectedFeature);
-          }
-
-        // Set the style of the currently selected feature
-        feature.setStyle(vector_style);
-        // Update the selectedFeature variable
-        selectedFeature = feature;
-          
-
-          return feature;
-
-
-          fcdata(current_fc);
-
-        })
-
-        
+    map.on('click', function(evt) {
+      var featureFound = false; // Track if a feature was found
   
-})
+      map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+          featureFound = true; // A feature was found
+          
+          delele.disabled = false; // Enable the delete button
+  
+          var current_fc = feature;
+  
+          if (selectedFeature) {
+              selectedFeature.setStyle(undefined);
+          }
+  
+          // Set the style of the currently selected feature
+          feature.setStyle(vector_style);
+          // Update the selectedFeature variable
+          selectedFeature = feature;
+  
+          fcdata(current_fc);
+  
+          return feature;
+      });
+  
+      if (!featureFound && selectedFeature) {
+          // No feature was found, deselect the currently selected feature
+          selectedFeature.setStyle(undefined);
+          selectedFeature = null;
+          delele.disabled = true; // Disable the delete button when no feature is selected
+      }
+  });
+  
 
 
 
+      
 
 // Event listener for delete button
 document.getElementById('delete-fc').addEventListener('click', function(event) {
   console.log('Delete function called');
+
+  startedit.disabled = true; // Disable the start button when editing starts
+  
 
   // Function to handle feature data
   function fcdata(current_fc) {
@@ -332,6 +339,9 @@ document.getElementById('delete-fc').addEventListener('click', function(event) {
           deletefeature(nameText);
       } else {
           alert('Please Select feature !');
+          
+          delele.disabled = true;
+
       }
   }
 
