@@ -50,12 +50,7 @@ right: 8px;
 background-color: #fafafa;
 }
 
-#saveButton {
-    text-decoration: none;
-    position: absolute;
-    bottom: 2px;
-    right: 8px;
-}
+
 
 /* #name{
 
@@ -96,6 +91,42 @@ table {
     z-index: 100;
     padding: 10px;
     background-color: rgb(211, 186, 235);
+    margin: 15px;
+    border-radius: 5px;
   }
 
+
+  /* #saveButton {
+    text-decoration: none;
+    position: absolute;
+    bottom: 2px;
+    right: 8px;
+  } */
+
+  #delete-fc{
+    /* text-decoration: none;
+    position: absolute;
+    bottom: 2px;
+    right: 8px; */
+    background-color: rgb(219, 97, 97);
+    padding: 3px;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color: rgb(219, 97, 97);
+  }
+  #start-edit{
+    background-color: #6bdb61;
+    padding: 3px;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color:  #6bdb61;
+  }
+
+  #stop-edit{
+    background-color: rgb(217, 219, 97);
+    padding: 3px;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color: rgb(217, 219, 97);
+  }
   

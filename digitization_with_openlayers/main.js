@@ -50,11 +50,11 @@ var drawLayer = new ol.layer.Vector({
   source: new ol.source.Vector(),
   style: new ol.style.Style({
     stroke: new ol.style.Stroke({
-      color: '#FF0000',
-      width: 2,
+      color: 'red',
+      width: 3,
     }),
     fill: new ol.style.Fill({
-      color: 'rgba(255, 0, 0, 0.1)',
+      color: 'rgba(255, 0, 0, .8)',
     }),
   }),
 });
@@ -119,7 +119,7 @@ function displayPopup(geometry) {
     <table id='table'>
       <tr>
         <th>Name:</th>
-        <th>Distance:</th>
+        <th>District:</th>
       </tr>
       <tr>
         <td><textarea name='name' id='name'></textarea></td>
@@ -154,8 +154,6 @@ function displayPopup(geometry) {
 }
 
 
-
-
 // function to add feature through api
 function saveFeature(feature) {
   var geoJSON = new ol.format.GeoJSON();
@@ -186,7 +184,9 @@ function saveFeature(feature) {
 }
 
 
-
+// Geometry writing function
+// var geoJSON = new ol.format.GeoJSON();
+ // var geometry = geoJSON.writeGeometry(feature.getGeometry(), {
 
 
 
@@ -214,63 +214,137 @@ var map = new ol.Map({
 
 map.addLayer(drawLayer);
 
-// map.addLayer(layer);
+map.addLayer(layer);
 
 
 // GeoJSON layer from GeoServer
+
+
+// GeoJSON URL from GeoServer
 var geojsonUrl = "http://localhost:8080/geoserver/cite/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=cite%3Afeatures&maxFeatures=50&outputFormat=application%2Fjson";
 
 // Style for the GeoJSON features
+
+var my_style = new ol.style.Style({
+  stroke: new ol.style.Stroke({
+    color: 'blue',
+    width: 1,
+  }),
+  fill: new ol.style.Fill({
+    color:'rgb(0, 204, 0,.2)'
+  })
+});
+
+
 var vector_style = new ol.style.Style({
   stroke: new ol.style.Stroke({
     color: 'red',
-    width: 1.25,
+    width: 3.25,
+  }),
+  fill: new ol.style.Fill({
+    color:'rgb(255,0,0,.1)'
   })
 });
 
-// Create the vector source with the GeoJSON data
-var vector_source = new ol.source.Vector({
+// Create a new Vector source and layer for GeoJSON features
+var vectorSource = new ol.source.Vector({
   format: new ol.format.GeoJSON(),
-  url: geojsonUrl
+  url: geojsonUrl, // Directly specify the URL
+  strategy: ol.loadingstrategy.bbox // Use bbox strategy for loading GeoJSON
 });
 
-// Create the vector layer with the source and style
-var vector_layer = new ol.layer.Vector({
-  source: vector_source,
-  style: vector_style,
-  visible: true
+var vectorLayer = new ol.layer.Vector({
+  source: vectorSource,
+  style: my_style // Apply the defined style to the features
 });
 
 // Add the vector layer to the map
-map.addLayer(vector_layer);
+map.addLayer(vectorLayer);
 
-// Initialize a single click select interaction
-var selectInteraction = new ol.interaction.Select({
-  condition: ol.events.condition.singleClick, // Select on single click
-  style: new ol.style.Style({
-    stroke: new ol.style.Stroke({
-      color: 'rgba(255, 0, 0, 1.0)',
-      width: 2
-    }),
-    fill: new ol.style.Fill({
-      color: 'rgba(255, 0, 0, 0.1)'
-    })
-  })
+
+
+
+let selectedFeature = null;
+
+
+
+map.on('click',function(evt){
+  // console.log(evt.coordinate);
+        map.forEachFeatureAtPixel(evt.pixel, function(feature){
+          // console.log(feature.get('name'));
+
+          var current_fc = feature;
+          
+          
+          if (selectedFeature) {
+            selectedFeature.setStyle(undefined);
+            // console.log('crossed this function');
+            // console.log(selectedFeature);
+          }
+
+        // Set the style of the currently selected feature
+        feature.setStyle(vector_style);
+        // Update the selectedFeature variable
+        selectedFeature = feature;
+          
+
+          return feature;
+
+
+          fcdata(current_fc);
+
+        })
+
+        
+  
+})
+
+
+
+
+// Event listener for delete button
+document.getElementById('delete-fc').addEventListener('click', function(event) {
+  console.log('Delete function called');
+
+  // Function to handle feature data
+  function fcdata(current_fc) {
+      if (current_fc) {
+          var nameText = current_fc.get('name'); // Assuming 'name' is a property of the feature
+
+          // Call deletefeature with the selected feature's name
+          deletefeature(nameText);
+      } else {
+          console.log('No feature selected.');
+      }
+  }
+
+  // Call fcdata with the selected feature
+  fcdata(selectedFeature);
 });
 
-// Add the select interaction to the map
-map.addInteraction(selectInteraction);
 
-// Handle selection events
-selectInteraction.on('select', function (e) {
-    var selectedFeatures = e.target.getFeatures(); // Selected features
-    
-    if (selectedFeatures.getLength() > 0) {
-        alert('Feature is selected!');
-    } else {
-        alert('No feature selected.');
-    }
-});
+// Function to delete feature through API
+function deletefeature(nameText) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', 'http://localhost:5000/delete_feature', true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+              var response = JSON.parse(xhr.responseText);
+              alert(response.message); // Alert response from server (success or error message)
+          } else {
+              alert('Error deleting feature. Please try again.');
+          }
+      }
+  };
+
+  // Send name as JSON payload
+  xhr.send(JSON.stringify({ name: nameText }));
+}
+
+
+
 
 
 
