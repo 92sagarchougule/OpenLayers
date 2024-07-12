@@ -86,11 +86,11 @@ table {
 
   #edit-button{
     position: absolute;
-    top: 5%;
+    top: 2%;
     left: 5%;
     z-index: 100;
-    padding: 10px;
-    background-color: rgb(211, 186, 235);
+    padding: 15px;
+    background-color: rgb(230, 212, 248);
     margin: 15px;
     border-radius: 5px;
   }
@@ -109,14 +109,14 @@ table {
     bottom: 2px;
     right: 8px; */
     background-color: rgb(219, 97, 97);
-    padding: 3px;
+    padding: 13px;
     border-radius: 5px;
     border-width: 2px;
     border-color: rgb(219, 97, 97);
   }
   #start-edit{
     background-color: #6bdb61;
-    padding: 3px;
+    padding: 13px;
     border-radius: 5px;
     border-width: 2px;
     border-color:  #6bdb61;
@@ -124,9 +124,17 @@ table {
 
   #stop-edit{
     background-color: rgb(217, 219, 97);
-    padding: 3px;
+    padding: 13px;
     border-radius: 5px;
     border-width: 2px;
     border-color: rgb(217, 219, 97);
   }
   
+
+  #geometry{
+    background-color: rgb(160, 154, 241);
+    padding: 13px;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color: rgb(217, 219, 97);
+  }

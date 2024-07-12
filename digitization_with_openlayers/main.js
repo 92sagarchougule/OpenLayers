@@ -59,9 +59,25 @@ var drawLayer = new ol.layer.Vector({
   }),
 });
 
+
+
+
+document.getElementById('geometry').onchange = function(){
+
+  var geom = document.getElementById('geometry').value;
+
+console.log(geom);
+
+}
+
+
+
+
+
+
 // draw interaction
 drawInteraction = new ol.interaction.Draw({
-  type: 'Polygon',
+  type: 'Polygon', 
   source: drawLayer.getSource(),
 });
 
@@ -80,6 +96,7 @@ function startbutton() {
 // Start edit
 var stopedit = document.getElementById('stop-edit');
 stopedit.addEventListener('click', stopbutton);
+stopedit.disabled = true; // Enable the stop button
 
 function stopbutton() {
   console.log('Stop Edit');
@@ -314,7 +331,7 @@ document.getElementById('delete-fc').addEventListener('click', function(event) {
           // Call deletefeature with the selected feature's name
           deletefeature(nameText);
       } else {
-          console.log('No feature selected.');
+          alert('Please Select feature !');
       }
   }
 
