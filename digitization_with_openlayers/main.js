@@ -1,5 +1,34 @@
 var drawInteraction, startedit, stopedit;
 
+
+// JavaScript to toggle the collapsible content
+document.addEventListener('DOMContentLoaded', function() {
+  var coll = document.getElementsByClassName('collapsible');
+  for (var i = 0; i < coll.length; i++) {
+      var header = coll[i].getElementsByTagName('h3')[0];
+      header.addEventListener('click', function() {
+          var content = this.nextElementSibling; // Get the content div
+          this.classList.toggle('active'); // Toggle active class on the header
+          if (content.style.display === 'block') {
+              content.style.display = 'none'; // Hide the content if it's visible
+          } else {
+              content.style.display = 'block'; // Show the content if it's hidden
+          }
+      });
+
+      // Prevent collapse when interacting with elements inside content
+      var contentElements = coll[i].querySelectorAll('.content *');
+      for (var j = 0; j < contentElements.length; j++) {
+          contentElements[j].addEventListener('click', function(event) {
+              event.stopPropagation(); // Stop event propagation to parent elements
+          });
+      }
+  }
+});
+
+
+
+
 /**
  * Elements that make up the popup.
  */
@@ -8,6 +37,12 @@ const content = document.getElementById('popup-content');
 const closer = document.getElementById('popup-closer');
 var clearfc = document.getElementById('clr-fc');
 
+var intersectButton = document.getElementById('Intersection');
+
+var clearintersectButton = document.getElementById('clearIntersectionEffects');
+
+intersectButton.disabled = true;
+clearintersectButton.disabled = true;
 
 
 
@@ -239,7 +274,7 @@ var map = new ol.Map({
 
 map.addLayer(drawLayer);
 
-map.addLayer(layer);
+// map.addLayer(layer);
 
 
 // GeoJSON layer from GeoServer
@@ -252,11 +287,12 @@ var geojsonUrl = "http://localhost:8080/geoserver/cite/ows?service=WFS&version=1
 
 var my_style = new ol.style.Style({
   stroke: new ol.style.Stroke({
-    color: 'blue',
+    color: 'black',
     width: 1,
+    lineDashOffset:10
   }),
   fill: new ol.style.Fill({
-    color:'rgb(0, 204, 0,.2)'
+    color:'rgb(170, 91, 73,.3)'
   })
 });
 
@@ -264,10 +300,10 @@ var my_style = new ol.style.Style({
 var vector_style = new ol.style.Style({
   stroke: new ol.style.Stroke({
     color: 'red',
-    width: 3.25,
+    width: 4.25,
   }),
   fill: new ol.style.Fill({
-    color:'rgb(255,0,0,.1)'
+    color:'rgb(255,0,0,.2)'
   })
 });
 
@@ -285,10 +321,6 @@ var vectorLayer = new ol.layer.Vector({
 
 // Add the vector layer to the map
 map.addLayer(vectorLayer);
-
-
-
-
        
 
             var delele = document.getElementById('delete-fc');
@@ -324,22 +356,19 @@ map.addLayer(vectorLayer);
                         map.getView().setZoom(18);
 
 
-                        // Buffer analysis
+                        // // Buffer analysis
 
-                        // convert the OpenLayers geometry to a JSTS geometry
-                        var jstsGeom = parser.read(feature.getGeometry());
+                        // // convert the OpenLayers geometry to a JSTS geometry
+                        // var jstsGeom = parser.read(feature.getGeometry());
 
-                        // create a buffer of 40 meters around each line
-                        var buffered = jstsGeom.buffer(0);
+                        // // create a buffer of 40 meters around each line
+                        // var buffered = jstsGeom.buffer(0);
 
-                        var buffered = jstsGeom.buffer(10);
+                        // var buffered = jstsGeom.buffer(10);
 
-                        // convert back from JSTS and replace the geometry on the feature
-                        feature.setGeometry(parser.write(buffered));
-
-
-                        
-            
+                        // // convert back from JSTS and replace the geometry on the feature
+                        // feature.setGeometry(parser.write(buffered));
+           
                         // Return the feature if needed
                         return feature;
                     }
@@ -365,7 +394,7 @@ map.addLayer(vectorLayer);
 
 
 
-            // Event listener for delete button
+// Event listener for delete button ------------------------------------------------------------------------------------------------------------------------------
             document.getElementById('delete-fc').addEventListener('click', function(event) {
               console.log('Delete function called');
               startedit.disabled = true; // Disable the start button when editing starts
@@ -384,10 +413,6 @@ map.addLayer(vectorLayer);
               // Call fcdata with the selected feature
               fcdata(selectedFeature);
             });
-
-
-
-
 
 
             // Function to delete feature through API
@@ -411,6 +436,151 @@ map.addLayer(vectorLayer);
 
 
 
+
+
+// Buffer code --------------------------------------------------------------------------------------------------------------------
+// Function to buffer features based on distance
+function bufferFeatures(distance) {
+  try {
+      var features = vectorSource.getFeatures();
+      var parser = new jsts.io.OL3Parser(); // Instantiate the parser
+
+      features.forEach(function(feature) {
+          var geom = feature.getGeometry();
+          // Preserve the original geometry if not already buffered
+          if (!feature.get('originalGeometry')) {
+              feature.set('originalGeometry', geom.clone()); // Clone to preserve original
+          }
+
+          var jstsGeom = parser.read(geom);
+          var buffered = jstsGeom.buffer(distance);
+          var bufferedOlGeom = parser.write(buffered);
+          feature.setGeometry(bufferedOlGeom);
+          intersectButton.disabled = false;
+      });
+
+      // Refresh the vector layer to reflect the changes
+      vectorLayer.getSource().changed();
+      console.log('Features buffered successfully');
+  } catch (error) {
+      console.error('Error buffering features:', error);
+      alert('Error buffering features. Please try again.');
+  }
+}
+
+// Event listener for Buffer button click
+document.getElementById('buffer').addEventListener('click', function() {
+  var distanceInput = document.getElementById('distance');
+  var distanceValue = parseFloat(distanceInput.value); // Get distance value
+
+  if (isNaN(distanceValue)) {
+      alert('Please enter a valid number for distance.');
+      return;
+  }
+
+  bufferFeatures(distanceValue); // Call bufferFeatures with the distance value
+});
+
+// Event listener for Clear Buffer button click
+document.getElementById('clearBuffer').addEventListener('click', function() {
+  try {
+      var features = vectorSource.getFeatures();
+      features.forEach(function(feature) {
+          var originalGeom = feature.get('originalGeometry');
+          if (originalGeom) {
+              feature.setGeometry(originalGeom.clone()); // Restore original geometry
+              feature.unset('originalGeometry'); // Remove originalGeometry property
+          }
+      });
+
+      // Refresh the vector layer to reflect the changes
+      vectorLayer.getSource().changed();
+      console.log('Buffer effects cleared successfully');
+      
+
+  } catch (error) {
+      console.error('Error clearing buffer effects:', error);
+      alert('Error clearing buffer effects. Please try again.');
+  }
+});
+
+
+
+
+
+
+
+// Intersection of buffer features -----------------------------------------------------------------------------------------------------------------------------------
+
+
+// Function to perform intersection analysis with buffered features
+function intersectingFeatureAnalysis() {
+  var bufferedFeatures = vectorSource.getFeatures();
+  var allFeatures = vectorLayer.getSource().getFeatures();
+  var intersectingFeatures = [];
+  clearintersectButton.disabled = false;
+
+  // Loop through buffered features to check intersection with other features
+  bufferedFeatures.forEach(function(bufferedFeature) {
+      var bufferedGeom = bufferedFeature.getGeometry();
+      var jstsBufferedGeom = parser.read(bufferedGeom);
+
+      // Loop through all features to find intersections with buffered feature
+      allFeatures.forEach(function(feature) {
+          if (feature !== bufferedFeature) {
+              var featureGeom = feature.getGeometry();
+              var jstsFeatureGeom = parser.read(featureGeom);
+
+              // Check intersection
+              if (jstsBufferedGeom.intersects(jstsFeatureGeom)) {
+                  intersectingFeatures.push(feature);
+
+                  // Optionally, style or handle intersecting feature
+                  feature.setStyle(new ol.style.Style({
+                      stroke: new ol.style.Stroke({
+                          color: 'green',
+                          width: 2,
+                      }),
+                      fill: new ol.style.Fill({
+                          color: 'rgba(255, 0, 0, 0.4)',
+                      }),
+                  }));
+              }
+          }
+      });
+  });
+
+  // Example: Output the count of intersecting features
+  console.log('Number of intersecting features:', intersectingFeatures.length);
+
+  // Further processing or display of intersecting features can be added here
+}
+
+// Event listener for intersect analysis button click (example)
+document.getElementById('Intersection').addEventListener('click', function() {
+  // Call intersectingFeatureAnalysis function to analyze intersections
+  intersectingFeatureAnalysis();
+});
+
+
+// Function to clear intersection effects (reset styles) -------------------
+function clearIntersectionEffects() {
+  var features = vectorLayer.getSource().getFeatures();
+  
+  // Iterate through all features in the vector layer
+  features.forEach(function(feature) {
+      // Reset feature style to default or remove custom style
+      feature.setStyle(null); // Reset to default style
+  });
+
+  console.log('Intersection effects cleared successfully');
+}
+
+// Event listener for clear intersection effects button click
+document.getElementById('clearIntersectionEffects').addEventListener('click', function() {
+  // Call clearIntersectionEffects function to remove intersection effects
+  clearIntersectionEffects();
+});
 
 
 

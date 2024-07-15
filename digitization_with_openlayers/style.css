@@ -86,16 +86,67 @@ table {
     background-color: #dddddd;
   }
 
-  #edit-button{
+  #Tools-bar{
     position: absolute;
     top: 2%;
     left: 5%;
     z-index: 100;
-    padding: 15px;
+    padding: 5px;
     background-color: rgb(230, 212, 248);
-    margin: 15px;
+    margin: 5px;
     border-radius: 5px;
+    align-items: center;
   }
+
+  #edit-button{
+    z-index: 100;
+    /* padding: 15px; */
+    background-color: rgb(230, 212, 248);
+    /* margin: 15px; */
+    border-radius: 5px;
+    align-items: center;
+  }
+
+  #geoprocessing{
+    z-index: 100;
+    /* padding: 15px; */
+    background-color: rgb(230, 212, 248);
+    /* margin: 15px; */
+    border-radius: 5px;
+    align-items: center;
+  }
+
+ 
+
+/* Styling for collapsible sections */
+.collapsible {
+  margin-bottom: 10px;
+}
+
+/* Default state for collapsible content (hidden) */
+.collapsible .content {
+  display: none;
+  padding: 5px;
+}
+
+/* Styling for the header (toggle button) */
+.collapsible h3 {
+  background-color: #f1f1f1;
+  padding: 10px;
+  margin: 0;
+}
+
+/* Rotate icon when content is visible */
+.collapsible.active h3 {
+  border-bottom: none;
+}
+
+/* Show content when active class is added */
+.collapsible.active .content {
+  display: block;
+}
+
+
 
 
   /* #saveButton {
@@ -131,6 +182,29 @@ table {
     border-width: 2px;
     border-color: rgb(217, 219, 97);
   }
+
+  #buffer{
+    background-color: rgb(233, 139, 139);
+    padding: 13px;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color:  rgb(233, 139, 139);
+  }
+  #Intersection{
+    background-color: rgb(197, 39, 144);
+    padding: 13px;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color: rgb(197, 39, 144);
+  }
+
+  #distance{
+    background-color: rgb(233, 139, 139);
+    padding: 13px;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color:  rgb(233, 139, 139);
+  }
   
 
   #geometry{
@@ -158,4 +232,21 @@ table {
     border-radius: 5px;
     border-width: 2px;
     border-color: rgb(206, 219, 85);
+  }
+
+
+  #clearBuffer{
+    background-color: rgb(43, 106, 148);
+    padding: 13px;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color: rgb(43, 106, 148);
+  }
+
+  #clearIntersectionEffects{
+    background-color: rgb(211, 223, 231);
+    padding: 13px;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color: rgb(211, 223, 231);
   }
