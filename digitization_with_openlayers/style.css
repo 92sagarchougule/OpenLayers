@@ -150,3 +150,12 @@ table {
     border-width: 2px;
     border-color: rgb(23, 146, 70);
   }
+
+
+  #refresh{
+    background-color: rgb(206, 219, 85);
+    padding: 13px;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color: rgb(206, 219, 85);
+  }

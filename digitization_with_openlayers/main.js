@@ -9,6 +9,8 @@ const closer = document.getElementById('popup-closer');
 var clearfc = document.getElementById('clr-fc');
 
 
+
+
 clearfc.disabled = true;
 
 // WMS layer from geoserver
@@ -22,7 +24,7 @@ var layer = new ol.layer.Tile({
 });
 
 
-
+var selectedFeature = null;
 
 
 
@@ -90,10 +92,12 @@ var startedit = document.getElementById('start-edit');
 startedit.addEventListener('click', startbutton);
 
 function startbutton() {
+  selectedFeature = null;
   console.log('Start Edit');
   map.addInteraction(drawInteraction);
   startedit.disabled = true; // Disable the start button when editing starts
   stopedit.disabled = false; // Enable the stop button
+  
 }
 
 
@@ -285,10 +289,12 @@ map.addLayer(vectorLayer);
 
 
 
-        let selectedFeature = null;
+       
 
             var delele = document.getElementById('delete-fc');
                 delele.disabled = true;
+
+                var parser = new jsts.io.OL3Parser();
 
 
                 map.on('click', function(evt) {
@@ -296,33 +302,48 @@ map.addLayer(vectorLayer);
                   map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
                       featureFound = true; // A feature was found
                       delele.disabled = false; // Enable the delete button
-              
+                      
                       // Check if the layer is vectorLayer
                       if (layer === vectorLayer) {
-                          console.log('Yes, selected only vector layer');
-              
-                          if (selectedFeature) {
-                              selectedFeature.setStyle(undefined);
-                          }
-              
-                          // Set the style of the currently selected feature
-                          feature.setStyle(vector_style);
-                          // Update the selectedFeature variable
-                          selectedFeature = feature;
-              
-                          clearfc.disabled = false;
-              
-                          // Get center feature and zoom
-                          
-                          map.getView().setCenter(ol.extent.getCenter(feature.getGeometry().getExtent()));
-                          map.getView().setZoom(18);
-                          
-              
-                          // Return the feature if needed
-                          return feature;
-                      }
-                  });
-              
+                        console.log('Yes, selected only vector layer');
+            
+                        if (selectedFeature) {
+                            selectedFeature.setStyle(undefined);
+                        }
+            
+                        // Set the style of the currently selected feature
+                        feature.setStyle(vector_style);
+                        // Update the selectedFeature variable
+                        selectedFeature = feature;
+            
+                        clearfc.disabled = false;
+            
+                        // Get center feature and zoom
+                        
+                        map.getView().setCenter(ol.extent.getCenter(feature.getGeometry().getExtent()));
+                        map.getView().setZoom(18);
+
+
+                        // Buffer analysis
+
+                        // convert the OpenLayers geometry to a JSTS geometry
+                        var jstsGeom = parser.read(feature.getGeometry());
+
+                        // create a buffer of 40 meters around each line
+                        var buffered = jstsGeom.buffer(0);
+
+                        var buffered = jstsGeom.buffer(10);
+
+                        // convert back from JSTS and replace the geometry on the feature
+                        feature.setGeometry(parser.write(buffered));
+
+
+                        
+            
+                        // Return the feature if needed
+                        return feature;
+                    }
+                });
                   if (!featureFound && selectedFeature) {
                       // No feature was found, deselect the currently selected feature
                       selectedFeature.setStyle(undefined);
@@ -332,16 +353,14 @@ map.addLayer(vectorLayer);
                   }
               });
               
-              document.getElementById('clr-fc').addEventListener('click', function(){
-                  if (selectedFeature) {
-                      selectedFeature.setStyle(undefined);
-                      selectedFeature = null;
-                      clearfc.disabled = true;
-                      delele.disabled = true; // Disable the delete button when no feature is selected
-                      console.log('Cleared selected feature');
-                  }
-              });
-              
+
+
+            document.getElementById('clr-fc').addEventListener('click', function(){
+              selectedFeature.setStyle(undefined);
+              console.log('clear feature');
+              clearfc.disabled = false;
+              delele.disabled = true; // Disable the delete button when no feature is selected
+            });
       
 
 

@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/ol@v8.1.0/dist/ol.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.1.0/ol.css">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsts/1.6.0/jsts.min.js"></script>
     
        
 </head>
@@ -20,12 +21,18 @@
             <option value="Polygon">Polygon</option>
         </select>
 
+        <button id="refresh" onClick="window.location.reload();"> Refresh</button>
+
         <button id="start-edit"> Start Edit</button>
         <button id="stop-edit"> Stop Edit</button>
 
         <button id="clr-fc"> Clear Feature</button>
 
         <button id="delete-fc"> Delete Feature</button>
+
+
+        <!-- <button id="buffer"> Buffer</button> -->
+
     </div>
 
    
