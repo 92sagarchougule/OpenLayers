@@ -52,6 +52,8 @@ background-color: #fafafa;
 
 
 
+
+
 /* #name{
 
     text-decoration: none;
@@ -138,4 +140,13 @@ table {
     border-width: 2px;
     border-color: rgb(217, 219, 97);
     display: none;
+  }
+
+
+  #clr-fc{
+    background-color: rgb(23, 146, 70);
+    padding: 13px;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color: rgb(23, 146, 70);
   }

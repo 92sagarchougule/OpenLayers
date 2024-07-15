@@ -6,6 +6,10 @@ var drawInteraction, startedit, stopedit;
 const container = document.getElementById('popup');
 const content = document.getElementById('popup-content');
 const closer = document.getElementById('popup-closer');
+var clearfc = document.getElementById('clr-fc');
+
+
+clearfc.disabled = true;
 
 // WMS layer from geoserver
 var layer = new ol.layer.Tile({
@@ -281,94 +285,110 @@ map.addLayer(vectorLayer);
 
 
 
-let selectedFeature = null;
+        let selectedFeature = null;
 
-var delele = document.getElementById('delete-fc');
-    delele.disabled = true;
-
-    map.on('click', function(evt) {
-      var featureFound = false; // Track if a feature was found
-  
-      map.forEachFeatureAtPixel(evt.pixel, function(feature) {
-          featureFound = true; // A feature was found
-          
-          delele.disabled = false; // Enable the delete button
-  
-          var current_fc = feature;
-  
-          if (selectedFeature) {
-              selectedFeature.setStyle(undefined);
-          }
-  
-          // Set the style of the currently selected feature
-          feature.setStyle(vector_style);
-          // Update the selectedFeature variable
-          selectedFeature = feature;
-  
-          fcdata(current_fc);
-  
-          return feature;
-      });
-  
-      if (!featureFound && selectedFeature) {
-          // No feature was found, deselect the currently selected feature
-          selectedFeature.setStyle(undefined);
-          selectedFeature = null;
-          delele.disabled = true; // Disable the delete button when no feature is selected
-      }
-  });
-  
+            var delele = document.getElementById('delete-fc');
+                delele.disabled = true;
 
 
-
+                map.on('click', function(evt) {
+                  var featureFound = false; // Track if a feature was found
+                  map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+                      featureFound = true; // A feature was found
+                      delele.disabled = false; // Enable the delete button
+              
+                      // Check if the layer is vectorLayer
+                      if (layer === vectorLayer) {
+                          console.log('Yes, selected only vector layer');
+              
+                          if (selectedFeature) {
+                              selectedFeature.setStyle(undefined);
+                          }
+              
+                          // Set the style of the currently selected feature
+                          feature.setStyle(vector_style);
+                          // Update the selectedFeature variable
+                          selectedFeature = feature;
+              
+                          clearfc.disabled = false;
+              
+                          // Get center feature and zoom
+                          
+                          map.getView().setCenter(ol.extent.getCenter(feature.getGeometry().getExtent()));
+                          map.getView().setZoom(18);
+                          
+              
+                          // Return the feature if needed
+                          return feature;
+                      }
+                  });
+              
+                  if (!featureFound && selectedFeature) {
+                      // No feature was found, deselect the currently selected feature
+                      selectedFeature.setStyle(undefined);
+                      clearfc.disabled = true;
+                      selectedFeature = null;
+                      delele.disabled = true; // Disable the delete button when no feature is selected
+                  }
+              });
+              
+              document.getElementById('clr-fc').addEventListener('click', function(){
+                  if (selectedFeature) {
+                      selectedFeature.setStyle(undefined);
+                      selectedFeature = null;
+                      clearfc.disabled = true;
+                      delele.disabled = true; // Disable the delete button when no feature is selected
+                      console.log('Cleared selected feature');
+                  }
+              });
+              
       
 
-// Event listener for delete button
-document.getElementById('delete-fc').addEventListener('click', function(event) {
-  console.log('Delete function called');
-
-  startedit.disabled = true; // Disable the start button when editing starts
-  
-
-  // Function to handle feature data
-  function fcdata(current_fc) {
-      if (current_fc) {
-          var nameText = current_fc.get('name'); // Assuming 'name' is a property of the feature
-
-          // Call deletefeature with the selected feature's name
-          deletefeature(nameText);
-      } else {
-          alert('Please Select feature !');
-          
-          delele.disabled = true;
-
-      }
-  }
-
-  // Call fcdata with the selected feature
-  fcdata(selectedFeature);
-});
 
 
-// Function to delete feature through API
-function deletefeature(nameText) {
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'http://localhost:5000/delete_feature', true);
-  xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-              var response = JSON.parse(xhr.responseText);
-              alert(response.message); // Alert response from server (success or error message)
-          } else {
-              alert('Error deleting feature. Please try again.');
-          }
-      }
-  };
+            // Event listener for delete button
+            document.getElementById('delete-fc').addEventListener('click', function(event) {
+              console.log('Delete function called');
+              startedit.disabled = true; // Disable the start button when editing starts
+              // Function to handle feature data
+              function fcdata(current_fc) {
+                  if (current_fc) {
+                      var nameText = current_fc.get('name'); // Assuming 'name' is a property of the feature
+                      // Call deletefeature with the selected feature's name
+                      deletefeature(nameText);
+                  } else {
+                      alert('Please Select feature !');
+                      
+                      delele.disabled = true;
+                  }
+              }
+              // Call fcdata with the selected feature
+              fcdata(selectedFeature);
+            });
 
-  // Send name as JSON payload
-  xhr.send(JSON.stringify({ name: nameText }));
-}
+
+
+
+
+
+            // Function to delete feature through API
+            function deletefeature(nameText) {
+              var xhr = new XMLHttpRequest();
+              xhr.open('POST', 'http://localhost:5000/delete_feature', true);
+              xhr.setRequestHeader('Content-Type', 'application/json');
+              xhr.onreadystatechange = function () {
+                  if (xhr.readyState === 4) {
+                      if (xhr.status === 200) {
+                          var response = JSON.parse(xhr.responseText);
+                          alert(response.message); // Alert response from server (success or error message)
+                      } else {
+                          alert('Error deleting feature. Please try again.');
+                      }
+                  }
+              };
+              // Send name as JSON payload
+              xhr.send(JSON.stringify({ name: nameText }));
+            }
 
 
 
