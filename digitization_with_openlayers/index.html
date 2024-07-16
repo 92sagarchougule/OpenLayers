@@ -38,14 +38,24 @@
             <h3 style="text-align: center; cursor: pointer;"> Geoprocessing Tools &#x25BC; </h3>
             <div class="content">
                 <!-- Geoprocessing tools content here -->
-                <label for="distance">Distance in Mtrs:</label>
-                <input type="number" id="distance" />
-                <button id="buffer"> Buffer</button>
-                <button id="clearBuffer"> Clear Buffer</button>
-                <br>
+                 <div id="buff"> <h3 style="text-align: center; margin: 5px;">Buffer Analysis</h3>
+                    
+                    <label for="distance">Distance in Mtrs:</label>
+                    <input type="number" id="distance" />
+                    <button id="buffer"> Buffer</button>
+                    <button id="clearBuffer"> Clear Buffer</button>
+
+                 </div>
+                
+                <div id="intersct"> 
+                    <h3 style="text-align: center; margin: 5px;">Intersect Analysis</h3>
+
                 <button id="Intersection">Intersection</button>
                 <button id="clearIntersectionEffects">Clear Intersection</button>
+                <button id="exportIntersection">export Intersection</button>
 
+                </div>
+                
             </div>
         </div>
     </div>

@@ -41,6 +41,10 @@ var intersectButton = document.getElementById('Intersection');
 
 var clearintersectButton = document.getElementById('clearIntersectionEffects');
 
+var exportIntersection = document.getElementById('exportIntersection');
+
+exportIntersection.disabled = true;
+
 intersectButton.disabled = true;
 clearintersectButton.disabled = true;
 
@@ -232,7 +236,7 @@ function saveFeature(feature) {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
         var response = xhr.responseText;
-        alert(response); // Alert response from server (success or error message)
+        // alert(response); // Alert response from server (success or error message)
       } else {
         alert('Error saving feature. Please try again.');
       }
@@ -289,21 +293,21 @@ var my_style = new ol.style.Style({
   stroke: new ol.style.Stroke({
     color: 'black',
     width: 1,
-    lineDashOffset:10
+    lineDashOffset:.1
   }),
   fill: new ol.style.Fill({
-    color:'rgb(170, 91, 73,.3)'
+    color:'rgb(0, 0, 255,.2)'
   })
 });
 
 
 var vector_style = new ol.style.Style({
   stroke: new ol.style.Stroke({
-    color: 'red',
+    color: 'black',
     width: 4.25,
   }),
   fill: new ol.style.Fill({
-    color:'rgb(255,0,0,.2)'
+    color:'rgb(255,0,0,.7)'
   })
 });
 
@@ -353,21 +357,7 @@ map.addLayer(vectorLayer);
                         // Get center feature and zoom
                         
                         map.getView().setCenter(ol.extent.getCenter(feature.getGeometry().getExtent()));
-                        map.getView().setZoom(18);
-
-
-                        // // Buffer analysis
-
-                        // // convert the OpenLayers geometry to a JSTS geometry
-                        // var jstsGeom = parser.read(feature.getGeometry());
-
-                        // // create a buffer of 40 meters around each line
-                        // var buffered = jstsGeom.buffer(0);
-
-                        // var buffered = jstsGeom.buffer(10);
-
-                        // // convert back from JSTS and replace the geometry on the feature
-                        // feature.setGeometry(parser.write(buffered));
+                        map.getView().setZoom(17);
            
                         // Return the feature if needed
                         return feature;
@@ -424,7 +414,7 @@ map.addLayer(vectorLayer);
                   if (xhr.readyState === 4) {
                       if (xhr.status === 200) {
                           var response = JSON.parse(xhr.responseText);
-                          alert(response.message); // Alert response from server (success or error message)
+                          // alert(response.message); // Alert response from server (success or error message)
                       } else {
                           alert('Error deleting feature. Please try again.');
                       }
@@ -514,11 +504,91 @@ document.getElementById('clearBuffer').addEventListener('click', function() {
 
 
 // Function to perform intersection analysis with buffered features
+// function intersectingFeatureAnalysis() {
+//   var bufferedFeatures = vectorSource.getFeatures();
+//   var allFeatures = vectorLayer.getSource().getFeatures();
+//   var intersectingFeatures = [];
+//   clearintersectButton.disabled = false;
+
+//   var intersectingGeoJSONs = [];
+
+//   // Loop through buffered features to check intersection with other features
+//   bufferedFeatures.forEach(function(bufferedFeature) {
+//       var bufferedGeom = bufferedFeature.getGeometry();
+//       var jstsBufferedGeom = parser.read(bufferedGeom);
+
+//       // Loop through all features to find intersections with buffered feature
+//       allFeatures.forEach(function(feature) {
+//           if (feature !== bufferedFeature) {
+//               var featureGeom = feature.getGeometry();
+//               var jstsFeatureGeom = parser.read(featureGeom);
+
+//               // Check intersection
+//               if (jstsBufferedGeom.intersects(jstsFeatureGeom)) {
+//                   intersectingFeatures.push(feature);
+
+//                   // Optionally, style or handle intersecting feature
+//                   feature.setStyle(new ol.style.Style({
+//                       stroke: new ol.style.Stroke({
+//                           color: 'green',
+//                           width: 2,
+//                       }),
+//                       fill: new ol.style.Fill({
+//                           color: 'rgba(255, 0, 0, 0.4)',
+//                       }),
+//                   }));
+//               }
+
+//              // Assign a unique ID to the feature if it doesn't have one
+//              if (!feature.getId()) {
+//               feature.setId(ol.getUid(feature));
+//           }
+
+//           // Convert intersecting feature to GeoJSON
+//           var geojson = new ol.format.GeoJSON().writeFeatureObject(feature);
+//           intersectingGeoJSONs.push(geojson);
+              
+//           }
+//       });
+
+//   });
+
+
+//  // After collecting GeoJSON for intersecting features, handle download
+//  if (intersectingGeoJSONs.length > 0) {
+//   var combinedGeoJSON = new ol.format.GeoJSON().writeFeatures(intersectingGeoJSONs);
+//   var blob = new Blob([combinedGeoJSON], {type: 'application/json'});
+//   var url = URL.createObjectURL(blob);
+
+//   // Create a download link
+//   var a = document.createElement('a');
+//   a.href = url;
+//   a.download = 'intersecting_features.geojson'; // Specify the filename
+//   document.body.appendChild(a);
+//   a.click();
+//   document.body.removeChild(a);
+// } else {
+//   console.log('No intersecting features found.');
+// }
+
+
+
+//   // Example: Output the count of intersecting features
+//   console.log('Number of intersecting features:', intersectingFeatures.length);
+
+//   // Further processing or display of intersecting features can be added here
+// }
+
+
+
+
 function intersectingFeatureAnalysis() {
   var bufferedFeatures = vectorSource.getFeatures();
   var allFeatures = vectorLayer.getSource().getFeatures();
-  var intersectingFeatures = [];
   clearintersectButton.disabled = false;
+
+  // Prepare an array to collect intersecting features
+  var intersectingFeatures = [];
 
   // Loop through buffered features to check intersection with other features
   bufferedFeatures.forEach(function(bufferedFeature) {
@@ -535,7 +605,7 @@ function intersectingFeatureAnalysis() {
               if (jstsBufferedGeom.intersects(jstsFeatureGeom)) {
                   intersectingFeatures.push(feature);
 
-                  // Optionally, style or handle intersecting feature
+                  // Style intersecting feature
                   feature.setStyle(new ol.style.Style({
                       stroke: new ol.style.Stroke({
                           color: 'green',
@@ -550,11 +620,55 @@ function intersectingFeatureAnalysis() {
       });
   });
 
-  // Example: Output the count of intersecting features
-  console.log('Number of intersecting features:', intersectingFeatures.length);
+  // Convert intersecting features to GeoJSON
+  var geojsonFormat = new ol.format.GeoJSON({dataProjection: 'EPSG:4326',featureProjection: 'EPSG:3857' });
 
-  // Further processing or display of intersecting features can be added here
+  var geojsonFeatures = geojsonFormat.writeFeatures(intersectingFeatures);
+
+
+
+
+  // var geometry = geoJSON.writeGeometry(feature.getGeometry(), {
+  //   dataProjection: 'EPSG:4326',
+  //   featureProjection: 'EPSG:3857',
+  // });
+
+
+
+        exportIntersection.disabled = false;
+
+        document.getElementById('exportIntersection').addEventListener('click', function() {
+
+          
+
+          
+
+        // Handle GeoJSON export
+            if (geojsonFeatures) {
+                var blob = new Blob([geojsonFeatures], {type: 'application/json'});
+                var url = URL.createObjectURL(blob);
+
+                // Create a download link
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'intersecting_features.geojson'; // Specify the filename
+                document.body.appendChild(a);
+                a.click();  
+                document.body.removeChild(a);
+            } else {
+                console.log('No intersecting features found.');  //exportIntersection
+            }
+
+      });
+
+
 }
+
+
+
+
+
+
 
 // Event listener for intersect analysis button click (example)
 document.getElementById('Intersection').addEventListener('click', function() {

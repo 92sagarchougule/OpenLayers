@@ -250,3 +250,25 @@ table {
     border-width: 2px;
     border-color: rgb(211, 223, 231);
   }
+
+
+
+  #exportIntersection{
+    background-color: rgb(34, 172, 119);
+    padding: 13px;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color: rgb(34, 172, 119);
+  }
+
+  #buff{
+    padding: 5px;
+    align-items: center;
+    margin: 5px;
+  }
+
+  #intersct{
+    padding: 5px;
+    align-items: center;
+    margin: 5px;
+  }
