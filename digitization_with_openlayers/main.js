@@ -254,10 +254,6 @@ function saveFeature(feature) {
 
 
 
-
-
-
-
 // Map class starts here ------------------------------------------------------------------------------------------------------
 
 
@@ -334,6 +330,12 @@ map.addLayer(vectorLayer);
 
 
                 map.on('click', function(evt) {
+                  // console.log(evt.extent);
+                  var coordinate = evt.coordinate;
+                  // var geometry = feature.getGeometry();
+                  // var extent = geometry.getExtent();
+                  // var center = ol.extent.getCenter(extent);
+
                   var featureFound = false; // Track if a feature was found
                   map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
                       featureFound = true; // A feature was found
@@ -341,24 +343,40 @@ map.addLayer(vectorLayer);
                       
                       // Check if the layer is vectorLayer
                       if (layer === vectorLayer) {
-                        console.log('Yes, selected only vector layer');
+                        // console.log('Yes, selected only vector layer');
             
                         if (selectedFeature) {
                             selectedFeature.setStyle(undefined);
                         }
-            
                         // Set the style of the currently selected feature
                         feature.setStyle(vector_style);
                         // Update the selectedFeature variable
                         selectedFeature = feature;
-            
                         clearfc.disabled = false;
             
                         // Get center feature and zoom
+                        // map.getView().setCenter(ol.extent.getCenter(feature.getGeometry().getExtent()));
+                        // map.getView().setZoom(17);
+
+                        // popup
+                        console.log(feature.get('name'));
+
+                        var fcname = feature.get('name');
+                        var fcdist = feature.get('dist');
+
+                        container.innerHTML = `<table>
+                                                <tr>
+                                                <th>Name</th> 
+                                                <th>District</th>
+                                                </tr>
+                                                <tr>
+                                                <td>${fcname}</td>
+                                                <td>${fcdist}</td>
+                                                </tr>
+                                               </table>`;
+
+                        overlay.setPosition(coordinate);
                         
-                        map.getView().setCenter(ol.extent.getCenter(feature.getGeometry().getExtent()));
-                        map.getView().setZoom(17);
-           
                         // Return the feature if needed
                         return feature;
                     }
@@ -369,6 +387,7 @@ map.addLayer(vectorLayer);
                       clearfc.disabled = true;
                       selectedFeature = null;
                       delele.disabled = true; // Disable the delete button when no feature is selected
+                      overlay.setPosition(undefined);
                   }
               });
               
@@ -497,90 +516,7 @@ document.getElementById('clearBuffer').addEventListener('click', function() {
 
 
 
-
-
-
 // Intersection of buffer features -----------------------------------------------------------------------------------------------------------------------------------
-
-
-// Function to perform intersection analysis with buffered features
-// function intersectingFeatureAnalysis() {
-//   var bufferedFeatures = vectorSource.getFeatures();
-//   var allFeatures = vectorLayer.getSource().getFeatures();
-//   var intersectingFeatures = [];
-//   clearintersectButton.disabled = false;
-
-//   var intersectingGeoJSONs = [];
-
-//   // Loop through buffered features to check intersection with other features
-//   bufferedFeatures.forEach(function(bufferedFeature) {
-//       var bufferedGeom = bufferedFeature.getGeometry();
-//       var jstsBufferedGeom = parser.read(bufferedGeom);
-
-//       // Loop through all features to find intersections with buffered feature
-//       allFeatures.forEach(function(feature) {
-//           if (feature !== bufferedFeature) {
-//               var featureGeom = feature.getGeometry();
-//               var jstsFeatureGeom = parser.read(featureGeom);
-
-//               // Check intersection
-//               if (jstsBufferedGeom.intersects(jstsFeatureGeom)) {
-//                   intersectingFeatures.push(feature);
-
-//                   // Optionally, style or handle intersecting feature
-//                   feature.setStyle(new ol.style.Style({
-//                       stroke: new ol.style.Stroke({
-//                           color: 'green',
-//                           width: 2,
-//                       }),
-//                       fill: new ol.style.Fill({
-//                           color: 'rgba(255, 0, 0, 0.4)',
-//                       }),
-//                   }));
-//               }
-
-//              // Assign a unique ID to the feature if it doesn't have one
-//              if (!feature.getId()) {
-//               feature.setId(ol.getUid(feature));
-//           }
-
-//           // Convert intersecting feature to GeoJSON
-//           var geojson = new ol.format.GeoJSON().writeFeatureObject(feature);
-//           intersectingGeoJSONs.push(geojson);
-              
-//           }
-//       });
-
-//   });
-
-
-//  // After collecting GeoJSON for intersecting features, handle download
-//  if (intersectingGeoJSONs.length > 0) {
-//   var combinedGeoJSON = new ol.format.GeoJSON().writeFeatures(intersectingGeoJSONs);
-//   var blob = new Blob([combinedGeoJSON], {type: 'application/json'});
-//   var url = URL.createObjectURL(blob);
-
-//   // Create a download link
-//   var a = document.createElement('a');
-//   a.href = url;
-//   a.download = 'intersecting_features.geojson'; // Specify the filename
-//   document.body.appendChild(a);
-//   a.click();
-//   document.body.removeChild(a);
-// } else {
-//   console.log('No intersecting features found.');
-// }
-
-
-
-//   // Example: Output the count of intersecting features
-//   console.log('Number of intersecting features:', intersectingFeatures.length);
-
-//   // Further processing or display of intersecting features can be added here
-// }
-
-
-
 
 function intersectingFeatureAnalysis() {
   var bufferedFeatures = vectorSource.getFeatures();
@@ -622,26 +558,9 @@ function intersectingFeatureAnalysis() {
 
   // Convert intersecting features to GeoJSON
   var geojsonFormat = new ol.format.GeoJSON({dataProjection: 'EPSG:4326',featureProjection: 'EPSG:3857' });
-
   var geojsonFeatures = geojsonFormat.writeFeatures(intersectingFeatures);
-
-
-
-
-  // var geometry = geoJSON.writeGeometry(feature.getGeometry(), {
-  //   dataProjection: 'EPSG:4326',
-  //   featureProjection: 'EPSG:3857',
-  // });
-
-
-
         exportIntersection.disabled = false;
-
         document.getElementById('exportIntersection').addEventListener('click', function() {
-
-          
-
-          
 
         // Handle GeoJSON export
             if (geojsonFeatures) {
@@ -658,10 +577,7 @@ function intersectingFeatureAnalysis() {
             } else {
                 console.log('No intersecting features found.');  //exportIntersection
             }
-
       });
-
-
 }
 
 
