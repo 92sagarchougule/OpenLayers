@@ -14,7 +14,6 @@
 <body>
 
     <div id="Tools-bar">
-
         <!-- Edit Tools Section -->
         <div id="edit-button" class="collapsible">
             <h3 style="text-align: center; cursor: pointer;"> Editing Tools &#x25BC; </h3>
@@ -58,6 +57,23 @@
                 
             </div>
         </div>
+
+        <div id="dbtable">
+            <h3> Attribute Manupulation </h3>
+            <select name="" id="attribute">
+                <option value="0">Select Type</option>
+                <option value="Add Attribute">Add Column</option>
+                <option value="Delete Attribute">Delete Column</option>
+            </select>
+            
+            <select name="" id="delete-attribute" style="display: none;">
+                <option value="">Select attribute to delete</option>
+            </select>
+            <button id="deletecolumn">Delete Column</button>
+
+
+        </div>
+
     </div>
     
 

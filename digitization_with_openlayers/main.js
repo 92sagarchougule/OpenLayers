@@ -1,30 +1,30 @@
 var drawInteraction, startedit, stopedit;
 
 
-// JavaScript to toggle the collapsible content
 document.addEventListener('DOMContentLoaded', function() {
-  var coll = document.getElementsByClassName('collapsible');
-  for (var i = 0; i < coll.length; i++) {
-      var header = coll[i].getElementsByTagName('h3')[0];
-      header.addEventListener('click', function() {
-          var content = this.nextElementSibling; // Get the content div
-          this.classList.toggle('active'); // Toggle active class on the header
-          if (content.style.display === 'block') {
-              content.style.display = 'none'; // Hide the content if it's visible
-          } else {
-              content.style.display = 'block'; // Show the content if it's hidden
-          }
-      });
+    var coll = document.getElementsByClassName('collapsible');
+    for (var i = 0; i < coll.length; i++) {
+        var header = coll[i].getElementsByTagName('h3')[0];
+        header.addEventListener('click', function() {
+            var content = this.nextElementSibling; // Get the content div
+            this.classList.toggle('active'); // Toggle active class on the header
+            if (content.style.display === 'block') {
+                content.style.display = 'none'; // Hide the content if it's visible
+            } else {
+                content.style.display = 'block'; // Show the content if it's hidden
+            }
+        });
 
-      // Prevent collapse when interacting with elements inside content
-      var contentElements = coll[i].querySelectorAll('.content *');
-      for (var j = 0; j < contentElements.length; j++) {
-          contentElements[j].addEventListener('click', function(event) {
-              event.stopPropagation(); // Stop event propagation to parent elements
-          });
-      }
-  }
+        // Prevent collapse when interacting with elements inside content
+        var contentElements = coll[i].querySelectorAll('.content *');
+        for (var j = 0; j < contentElements.length; j++) {
+            contentElements[j].addEventListener('click', function(event) {
+                event.stopPropagation(); // Stop event propagation to parent elements
+            });
+        }
+    }
 });
+
 
 
 
@@ -612,6 +612,238 @@ document.getElementById('clearIntersectionEffects').addEventListener('click', fu
   clearIntersectionEffects();
 });
 
+
+
+
+
+// Attribute Add and Delete --------------------------------------------------------------------------------------------------------------------------------------------
+
+// document.getElementById('attribute').onchange = function(){
+//   var attri = document.getElementById('attribute').value;
+
+//   console.log(attri); 
+
+
+// }
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Get the select element for attribute manipulation
+  var attributeSelect = document.getElementById('attribute');
+  var dbtableDiv = document.getElementById('dbtable');
+  var inputText = null;
+  var selectType = null;
+  var addButton = null;
+
+  // Function to create and append elements for adding attribute
+  function createAttributeElements() {
+      // Create input element for attribute name
+      inputText = document.createElement('input');
+      inputText.type = 'text';
+      inputText.id = 'attributeName'; // Assign an ID to the input
+      inputText.placeholder = 'Enter attribute name'; // Optional placeholder text
+
+      // Create select element for attribute type
+      selectType = document.createElement('select');
+      selectType.id = 'attributeType'; // Assign an ID to the select
+
+      // Create options for the select element
+      var optionText = document.createElement('option');
+      optionText.value = 'varchar(255)';
+      optionText.textContent = 'Text';
+      selectType.appendChild(optionText);
+
+      var optionNumeric = document.createElement('option');
+      optionNumeric.value = 'int';
+      optionNumeric.textContent = 'Numeric';
+      selectType.appendChild(optionNumeric);
+
+      var optionJson = document.createElement('option');
+      optionJson.value = 'json';
+      optionJson.textContent = 'JSON';
+      selectType.appendChild(optionJson);
+
+      // Create button element for adding attribute
+      addButton = document.createElement('button');
+      addButton.textContent = 'Add Attribute';
+      addButton.id = 'addAttributeButton'; // Assign an ID to the button
+
+      // Event listener for the Add Attribute button
+      addButton.addEventListener('click', function() {
+          var attributeName = inputText.value.trim();
+          var attributeType = selectType.value;
+
+          // Example validation (you can add more complex validation as needed)
+          if (attributeName && attributeType) {
+              // Perform addition logic here (e.g., store attribute details)
+              console.log('Attribute Name:', attributeName);
+              console.log('Attribute Type:', attributeType);
+
+              // Call function to make XMLHttpRequest to server
+              xhrcall(attributeName, attributeType);
+
+              // Clear input fields after addition
+              inputText.value = '';
+              selectType.selectedIndex = 0; // Reset select to default option
+          } else {
+              alert('Please enter attribute name and select type.');
+          }
+      });
+
+      // Append elements to dbtableDiv
+      dbtableDiv.appendChild(inputText);
+      dbtableDiv.appendChild(selectType);
+      dbtableDiv.appendChild(addButton);
+  }
+
+  // Event listener for change in select element
+  attributeSelect.addEventListener('change', function() {
+      var selectedValue = attributeSelect.value;
+
+      // Check if "Add Attribute" option is selected and elements are not already added
+      if (selectedValue === 'Add Attribute' && !inputText && !selectType && !addButton) {
+          createAttributeElements();
+      } else if (selectedValue !== 'Add Attribute') {
+          // If any other option is selected, remove the input and select elements
+          if (inputText) {
+              dbtableDiv.removeChild(inputText);
+              inputText = null;
+          }
+          if (selectType) {
+              dbtableDiv.removeChild(selectType);
+              selectType = null;
+          }
+          if (addButton) {
+              dbtableDiv.removeChild(addButton);
+              addButton = null;
+          }
+      }
+  });
+
+  // XMLHttpRequest function to call server-side API
+  function xhrcall(attributeName, attributeType) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', "http://localhost:5000/add_attribute", true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+              if (xhr.status === 200) {
+                  var response = JSON.parse(xhr.responseText);
+                  alert(response.message); // Alert response from server (success or error message)
+              } else {
+                  alert('Error while adding column. Please try again.');
+              }
+          }
+      };
+
+      // Send attribute name and type as JSON payload
+      xhr.send(JSON.stringify({ attributeName: attributeName, attributeType: attributeType }));
+  }
+});
+
+
+
+
+
+// var xhr = new XMLHttpRequest();
+//     xhr.open('GET',"http://localhost:5000/column_list",true);
+//     xhr.setRequestHeader('Centent-Type','application/json');
+//     xhr.onreadystatechange = function () {
+//       if (xhr.readyState === 4) {
+//           if (xhr.status === 200) {
+//               var response = JSON.parse(xhr.responseText);
+//               console.log(response.column_names); // Alert response from server (success or error message)
+//           } else {
+//               alert('Error while adding column. Please try again.');
+//           }
+//       }
+//       };
+//     xhr.send();
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  var attributeSelect = document.getElementById('attribute');
+  var deleteAttributeSelect = document.getElementById('delete-attribute');
+  var deleteColumn = document.getElementById('deletecolumn');
+
+  // Function to fetch column names and populate delete attribute options
+  function populateDeleteAttributeOptions() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', "http://localhost:5000/column_list", true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+              if (xhr.status === 200) {
+                  var response = JSON.parse(xhr.responseText);
+                  var columnNames = response.column_names; // Assuming column_names is an array of column names
+
+                  // Populate delete attribute options
+                  if (deleteAttributeSelect) {
+                      deleteAttributeSelect.innerHTML = ''; // Clear existing options
+
+                      // Create default option
+                      var defaultOption = document.createElement('option');
+                      defaultOption.value = '';
+                      defaultOption.textContent = 'Select attribute to delete';
+                      deleteAttributeSelect.appendChild(defaultOption);
+
+                      // Create options for each column name
+                      columnNames.forEach(function(columnName) {
+                          var option = document.createElement('option');
+                          option.value = columnName;
+                          option.textContent = columnName;
+                          deleteAttributeSelect.appendChild(option);
+                      });
+
+                      // Show the delete attribute select
+                      deleteAttributeSelect.style.display = 'block';
+                      deleteColumn.style.display = 'block';
+                  } else {
+                      console.error('delete-attribute select element not found.');
+                  }
+              } else {
+                  console.error('Error fetching column list:', xhr.status);
+                  alert('Error while fetching column list. Please try again.');
+              }
+          }
+      };
+      xhr.send();
+  }
+
+  // Event listener for change in the "Delete Attribute" select element
+  if (attributeSelect) {
+      attributeSelect.addEventListener('change', function() {
+          var selectedValue = attributeSelect.value;
+
+          // Check if "Delete Attribute" is selected
+          if (selectedValue === 'Delete Attribute') {
+              // Populate options and show the delete attribute select
+              populateDeleteAttributeOptions();
+          } else {
+              // Hide the delete attribute select
+              deleteAttributeSelect.style.display = 'none';
+              deleteColumn.style.display = 'none';
+          }
+      });
+  } else {
+      console.error('attribute select element not found.');
+  }
+});
+
+
+
+
+
+    
+
+
+// Add Attibute ---------------------------------------------------------------------------------------------
+
+
+// document.getElementById('addAttributeButton').addEventListener('click', function(){
+//   console.log('this is add Attribute code here');
+// })
 
 
 
