@@ -654,13 +654,13 @@ document.addEventListener('DOMContentLoaded', function() {
       selectType.appendChild(optionText);
 
       var optionNumeric = document.createElement('option');
-      optionNumeric.value = 'int';
+      optionNumeric.value = 'INTEGER';
       optionNumeric.textContent = 'Numeric';
       selectType.appendChild(optionNumeric);
 
       var optionJson = document.createElement('option');
-      optionJson.value = 'json';
-      optionJson.textContent = 'JSON';
+      optionJson.value = 'varchar(255)';
+      optionJson.textContent = 'Email';
       selectType.appendChild(optionJson);
 
       // Create button element for adding attribute
@@ -762,6 +762,106 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+// document.addEventListener('DOMContentLoaded', function() {
+//   var attributeSelect = document.getElementById('attribute');
+//   var deleteAttributeSelect = document.getElementById('delete-attribute');
+//   var deleteColumn = document.getElementById('deletecolumn');
+
+//   // Function to fetch column names and populate delete attribute options
+//   function populateDeleteAttributeOptions() {
+//       var xhr = new XMLHttpRequest();
+//       xhr.open('GET', "http://localhost:5000/column_list", true);
+//       xhr.setRequestHeader('Content-Type', 'application/json');
+//       xhr.onreadystatechange = function() {
+//           if (xhr.readyState === 4) {
+//               if (xhr.status === 200) {
+//                   var response = JSON.parse(xhr.responseText);
+//                   var columnNames = response.column_names; // Assuming column_names is an array of column names
+
+//                   // Populate delete attribute options
+//                   if (deleteAttributeSelect) {
+//                       deleteAttributeSelect.innerHTML = ''; // Clear existing options
+
+//                       // Create default option
+//                       var defaultOption = document.createElement('option');
+//                       defaultOption.value = '';
+//                       defaultOption.textContent = 'Select attribute to delete';
+//                       deleteAttributeSelect.appendChild(defaultOption);
+
+//                       // Create options for each column name
+//                       columnNames.forEach(function(columnName) {
+//                           var option = document.createElement('option');
+//                           option.value = columnName;
+//                           option.textContent = columnName;
+//                           deleteAttributeSelect.appendChild(option);
+//                       });
+
+//                       // Show the delete attribute select
+//                       deleteAttributeSelect.style.display = 'block';
+//                       deleteColumn.style.display = 'block';
+//                   } else {
+//                       console.error('delete-attribute select element not found.');
+//                   }
+//               } else {
+//                   console.error('Error fetching column list:', xhr.status);
+//                   alert('Error while fetching column list. Please try again.');
+//               }
+//           }
+//       };
+//       xhr.send();
+//   }
+
+//   // Event listener for change in the "Delete Attribute" select element
+//   if (attributeSelect) {
+//       attributeSelect.addEventListener('change', function() {
+//           var selectedValue = attributeSelect.value;
+
+//           // Check if "Delete Attribute" is selected
+//           if (selectedValue === 'Delete Attribute') {
+//               // Populate options and show the delete attribute select
+//               populateDeleteAttributeOptions();
+//           } else {
+//               // Hide the delete attribute select
+//               deleteAttributeSelect.style.display = 'none';
+//               deleteColumn.style.display = 'none';
+//           }
+//       });
+//   } else {
+//       console.error('attribute select element not found.');
+//   }
+
+
+
+//   document.getElementById('deletecolumn').addEventListener('click',function(){
+//     console.log('Yes consoled');
+
+//     var delete_value = document.getElementById('delete-attribute').value;
+//     console.log(delete_value);
+
+
+//     var xhr = new XMLHttpRequest();
+//         xhr.open('POST','http://localhost:5000/drop_column',true);
+//         xhr.setRequestHeader('Content-Type','application/json');
+//         xhr.onreadystatechange = function () {
+//           if (xhr.readyState === 4) {
+//               if (xhr.status === 200) {
+//                   var response = JSON.parse(xhr.responseText);
+//                   // alert(response.message); // Alert response from server (success or error message)
+//               } else {
+//                   alert('Error while drop column. Please try again.');
+//               }
+//           }
+//       };
+//         xhr.send(JSON.stringify({ columnName: delete_value }));
+
+//   })
+
+// });
+
+
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
   var attributeSelect = document.getElementById('attribute');
   var deleteAttributeSelect = document.getElementById('delete-attribute');
@@ -798,7 +898,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
                       // Show the delete attribute select
                       deleteAttributeSelect.style.display = 'block';
-                      deleteColumn.style.display = 'block';
                   } else {
                       console.error('delete-attribute select element not found.');
                   }
@@ -811,7 +910,7 @@ document.addEventListener('DOMContentLoaded', function() {
       xhr.send();
   }
 
-  // Event listener for change in the "Delete Attribute" select element
+  // Event listener for change in the "attribute" select element
   if (attributeSelect) {
       attributeSelect.addEventListener('change', function() {
           var selectedValue = attributeSelect.value;
@@ -820,8 +919,9 @@ document.addEventListener('DOMContentLoaded', function() {
           if (selectedValue === 'Delete Attribute') {
               // Populate options and show the delete attribute select
               populateDeleteAttributeOptions();
+              deleteColumn.style.display = 'block'; // Show the delete button
           } else {
-              // Hide the delete attribute select
+              // Hide the delete attribute select and delete button
               deleteAttributeSelect.style.display = 'none';
               deleteColumn.style.display = 'none';
           }
@@ -829,11 +929,31 @@ document.addEventListener('DOMContentLoaded', function() {
   } else {
       console.error('attribute select element not found.');
   }
+
+  // Event listener for delete button click
+  if (deleteColumn) {
+      deleteColumn.addEventListener('click', function() {
+          var delete_value = deleteAttributeSelect.value;
+
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', 'http://localhost:5000/drop_column', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onreadystatechange = function() {
+              if (xhr.readyState === 4) {
+                  if (xhr.status === 200) {
+                      var response = JSON.parse(xhr.responseText);
+                      alert(response.message); // Alert response from server (success or error message)
+                  } else {
+                      alert('Error while dropping column. Please try again.');
+                  }
+              }
+          };
+          xhr.send(JSON.stringify({ columnName: delete_value }));
+      });
+  } else {
+      console.error('deletecolumn button element not found.');
+  }
 });
-
-
-
-
 
     
 

@@ -1,8 +1,12 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import psycopg2
+# import logging
+
+
 
 app = Flask(__name__)
+# logging.basicConfig(level=logging.DEBUG) 
 CORS(app)  # Enable CORS for all routes
 
 # Database connection parameters
@@ -114,6 +118,9 @@ def column_list():
         conn = psycopg2.connect(host=host, dbname=dbname, user=user, password=password)
         cursor = conn.cursor()
 
+        
+        
+
         # Prepare SQL statement to select column names
         sql = """
         SELECT column_name
@@ -135,6 +142,42 @@ def column_list():
         # Prepare response JSON with column names
         column_names = [column[0] for column in columns]
         return jsonify({"column_names": column_names}), 200
+
+    except psycopg2.Error as e:
+        # Handle database errors
+        return jsonify({"error": str(e)}), 500
+    
+
+@app.route('/drop_column', methods=['POST'])
+def drop_column():
+    try:
+        # Connect to PostgreSQL database
+        conn = psycopg2.connect(host=host, dbname=dbname, user=user, password=password)
+        cursor = conn.cursor()
+
+        # Get data from request JSON
+        data = request.get_json()
+        columnName = data.get('columnName')
+
+        # Validate input (optional)
+        if not columnName:
+            return jsonify({"error": "columnName parameter is required"}), 400
+
+        # Prepare SQL statement to drop column from table
+        sql = f"ALTER TABLE features DROP COLUMN {columnName}"
+
+        # Execute SQL statement
+        cursor.execute(sql)
+
+        # Commit the transaction
+        conn.commit()
+
+        # Close cursor and connection
+        cursor.close()
+        conn.close()
+
+        # Prepare response JSON
+        return jsonify({"message": f"Column '{columnName}' dropped successfully"}), 200
 
     except psycopg2.Error as e:
         # Handle database errors

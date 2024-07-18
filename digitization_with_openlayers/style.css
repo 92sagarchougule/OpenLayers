@@ -284,9 +284,10 @@ table {
   }
 
   #attribute{
-    padding: 5px;
+    padding: 10px;
     align-items: center;
     margin: 5px;
+    background-color: #6bdb61;
   }
 
 
@@ -366,4 +367,8 @@ table {
 
 #dbtable button:hover {
   background-color: #0056b3;
+}
+
+#deletecolumn{
+  display: none;
 }
